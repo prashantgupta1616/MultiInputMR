@@ -1,0 +1,27 @@
+package com.jpa;
+
+import java.io.IOException;
+import java.util.Iterator;
+
+import org.apache.hadoop.io.IntWritable;
+import org.apache.hadoop.io.Text;
+import org.apache.hadoop.mapreduce.Reducer;
+
+public class SchoolJoinReducer extends Reducer<IntWritable, Text, IntWritable, Text> {
+
+	@Override
+	public void reduce(IntWritable key, Iterable<Text> val, Context context) throws IOException, InterruptedException {
+
+		Iterator<Text> it = val.iterator();
+		String[] s = new String[3];
+		int i = 0;
+		while (it.hasNext()) {
+			s[i] = it.next().toString();
+			i++;
+		}
+
+		String var = s[0] + "\t" + s[1] + "\t" + s[2];
+		context.write(key, new Text(var));
+	}
+
+}
