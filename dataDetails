@@ -1,0 +1,32 @@
+Student data
+=============
+StudentID,Name,year,schoolId
+101,Ram,2003
+402,John,2003
+103,Kaira,2003
+205,Peter,2005
+106,John,2001
+
+
+School data
+============
+schoolname,StudentID
+Delhi Public school,103
+Rainbow school,205
+Gyan school,106
+New Horizon school,101
+Gyan school,402
+
+
+Result data
+============
+
+StudentId,Grade
+106,A
+205,A++
+103,A-
+402,A+
+101,A+
+
+
+
