@@ -1,0 +1,61 @@
+package com.jpa;
+
+import java.io.IOException;
+
+import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.io.IntWritable;
+import org.apache.hadoop.io.Text;
+import org.apache.hadoop.mapreduce.Job;
+import org.apache.hadoop.mapreduce.lib.input.MultipleInputs;
+import org.apache.hadoop.mapreduce.lib.input.TextInputFormat;
+import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
+import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
+
+public class SchoolDataDriver {
+
+	public static void main(String[] args) {
+
+		if (args.length != 4) {
+			System.out.println("Exit");
+			System.exit(-1);
+		}
+
+		try {
+			Job job = Job.getInstance(new Configuration());
+			job.setJarByClass(SchoolDataDriver.class);
+			job.setJobName("Reducer_Side_Join");
+			// I/O formats
+			// job.setInputFormatClass(TextInputFormat.class);
+			job.setOutputFormatClass(TextOutputFormat.class);
+			// key value pairs
+			job.setOutputKeyClass(IntWritable.class);
+			job.setOutputValueClass(Text.class);
+
+			Path path1 = new Path(args[0]);
+			Path path2 = new Path(args[1]);
+			Path path3 = new Path(args[2]);
+			MultipleInputs.addInputPath(job, path1, TextInputFormat.class, SchoolStudentMapper.class);
+			MultipleInputs.addInputPath(job, path2, TextInputFormat.class, SchoolInformationMapper.class);
+			MultipleInputs.addInputPath(job, path3, TextInputFormat.class, SchoolResultMapper.class);
+
+			job.setReducerClass(SchoolJoinReducer.class);
+			FileOutputFormat.setOutputPath(job,new Path(args[3]));
+
+			job.waitForCompletion(true);
+			job.submit();
+
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+	}
+
+}
